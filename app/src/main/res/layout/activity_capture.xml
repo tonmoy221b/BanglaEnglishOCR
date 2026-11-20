@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#000000">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent" android:layout_height="match_parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnShutter"
+        android:layout_width="wrap_content" android:layout_height="64dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="40dp" android:paddingHorizontal="40dp"
+        android:enabled="false" android:text="Capture" android:textSize="18sp" />
+
+    <LinearLayout
+        android:id="@+id/progressBox"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_gravity="center" android:orientation="vertical"
+        android:gravity="center" android:visibility="gone"
+        android:background="#CC000000" android:padding="24dp">
+        <ProgressBar android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" android:text="Reading text…" android:textColor="#FFFFFF" />
+    </LinearLayout>
+</FrameLayout>
