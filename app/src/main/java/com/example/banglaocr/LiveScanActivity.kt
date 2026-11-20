@@ -65,7 +65,7 @@ class LiveScanActivity : AppCompatActivity() {
                             runOnUiThread { liveText.text = text }
                         }
                     }
-                } catch (_: Exception) {
+                } catch (e: Exception) {
                 } finally {
                     proxy.close()
                 }
