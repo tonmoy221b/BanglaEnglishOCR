@@ -12,8 +12,13 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - name: Accept Android SDK licenses (SDK is preinstalled on the runner)
-        run: yes | sdkmanager --licenses > /dev/null || true
+      - name: Prepare Android SDK (preinstalled on the runner)
+        run: |
+          SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          [ -x "$SDKM" ] || SDKM="$(command -v sdkmanager || true)"
+          [ -x "$SDKM" ] || SDKM="$(ls $ANDROID_HOME/cmdline-tools/*/bin/sdkmanager | head -1)"
+          yes | "$SDKM" --licenses > /dev/null || true
+          "$SDKM" "platforms;android-34" "build-tools;34.0.0" > /dev/null || true
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.7"
@@ -23,7 +28,11 @@ jobs:
           curl -fL -o app/src/main/assets/tessdata/ben.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/main/ben.traineddata
           curl -fL -o app/src/main/assets/tessdata/eng.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/main/eng.traineddata
       - name: Build debug APK
-        run: gradle assembleDebug --no-daemon
+        run: gradle assembleDebug --no-daemon --console=plain --stacktrace 2>&1 | tee build.log; test ${PIPESTATUS[0]} -eq 0
+        shell: bash
+      - name: Show errors
+        if: failure()
+        run: grep -nE "^e: |What went wrong|error:|Execution failed|Could not" -A3 build.log | head -60
       - uses: actions/upload-artifact@v4
         with:
           name: BanglaOCR-apk
